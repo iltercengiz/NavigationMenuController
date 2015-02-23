@@ -1,7 +1,8 @@
-# OS X
-.DS_Store
+# Created by https://www.gitignore.io
 
+### Objective-C ###
 # Xcode
+#
 build/
 *.pbxuser
 !default.pbxuser
@@ -18,15 +19,45 @@ profile
 DerivedData
 *.hmap
 *.ipa
+*.xcuserstate
+*.xcworkspace
 
-# Bundler
-.bundle
 
+# CocoaPods
+#
 # We recommend against adding the Pods directory to your .gitignore. However
 # you should judge for yourself, the pros and cons are mentioned at:
 # http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
 # 
 # Note: if you ignore the Pods directory, make sure to uncomment
 # `pod install` in .travis.yml
-#
-# Pods/
+# 
+Pods/
+Podfile.lock
+
+# Bundler
+.bundle
+
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
