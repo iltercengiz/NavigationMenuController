@@ -159,7 +159,7 @@
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MenuItemCollectionViewCell" forIndexPath:indexPath];
     
-    cell.backgroundColor = [UIColor colorWithWhite:(CGFloat)(arc4random() % 255)/255.0 alpha:1.0];
+    cell.backgroundColor = [UIColor lightGrayColor];
     
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:1];
     
