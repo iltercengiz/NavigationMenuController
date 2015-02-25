@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NavigationMenuManager : NSObject
+#import <UINavigationMenuController.h>
+
+@interface NavigationMenuManager : NSObject <UINavigationMenuControllerDataSource>
+
+
 
 @end
