@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
     s.name             = "NavigationMenuController"
     s.version          = "0.1.0"
-    s.summary          = "A short description of NavigationMenuController."
+    s.summary          = "A UINavigationController subclass that adds a menu button in navigation bar to navigate through view controllers from a dropdown menu."
     s.description      = <<-DESC
                             An optional longer description of NavigationMenuController
 
