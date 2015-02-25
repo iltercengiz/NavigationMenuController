@@ -8,30 +8,54 @@
 
 #import "NavigationMenuController.h"
 
-@interface NavigationMenuController ()
+@interface NavigationMenuController () <UINavigationMenuControllerDataSource, UINavigationMenuControllerDelegate>
 
 @end
 
 @implementation NavigationMenuController
 
+#pragma mark - View life cycle
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.menuControllerDataSource = self;
+    self.menuControllerDelegate = self;
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-/*
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    
 }
-*/
+
+#pragma mark - Navigation menu controller data source
+
+- (UIViewController *)navigationMenuController:(UINavigationMenuController *)navigationMenuController viewControllerForMenuItemAtIndex:(NSInteger)index {
+    UIViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuItemViewController"];
+    UILabel *label = (UILabel *)[vc.view viewWithTag:1];
+    label.text = [NSString stringWithFormat:@"View Controller %li", index + 1];
+    return vc;
+}
+
+- (NSString *)navigationMenuController:(UINavigationMenuController *)navigationMenuController titleForMenuItemAtIndex:(NSInteger)index {
+    return [NSString stringWithFormat:@"Title %li", index + 1];
+}
+
+- (NSInteger)numberOfMenuItemsInNavigationMenuController:(UINavigationMenuController *)navigationMenuController {
+    return 6;
+}
+
+#pragma mark - Navigation menu controller delegate
+
+- (void)navigationMenuController:(UINavigationMenuController *)navigationMenuController didSelectMenuItemAtIndex:(NSInteger)index {
+    NSLog(@"-navigationMenuController:didSelectMenuItemAtIndex: %li", index);
+}
 
 @end
