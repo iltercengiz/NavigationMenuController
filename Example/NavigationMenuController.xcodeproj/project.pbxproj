@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		36C752BA1A9DC99F0053C4AB /* NavigationMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C752B91A9DC99F0053C4AB /* NavigationMenuController.m */; };
+		36C752BA1A9DC99F0053C4AB /* MenuItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C752B91A9DC99F0053C4AB /* MenuItemViewController.m */; };
 		36C752BD1A9DF2BF0053C4AB /* NavigationMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C752BC1A9DF2BF0053C4AB /* NavigationMenuManager.m */; };
 		36C916B01A9B5E0200E6B351 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36C916AF1A9B5E0200E6B351 /* Main.storyboard */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
@@ -38,8 +38,8 @@
 
 /* Begin PBXFileReference section */
 		07EBA079D9166851B0C52E07 /* Pods-NavigationMenuController.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavigationMenuController.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavigationMenuController/Pods-NavigationMenuController.release.xcconfig"; sourceTree = "<group>"; };
-		36C752B81A9DC99F0053C4AB /* NavigationMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationMenuController.h; sourceTree = "<group>"; };
-		36C752B91A9DC99F0053C4AB /* NavigationMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationMenuController.m; sourceTree = "<group>"; };
+		36C752B81A9DC99F0053C4AB /* MenuItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuItemViewController.h; sourceTree = "<group>"; };
+		36C752B91A9DC99F0053C4AB /* MenuItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuItemViewController.m; sourceTree = "<group>"; };
 		36C752BB1A9DF2BF0053C4AB /* NavigationMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationMenuManager.h; sourceTree = "<group>"; };
 		36C752BC1A9DF2BF0053C4AB /* NavigationMenuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationMenuManager.m; sourceTree = "<group>"; };
 		36C916AF1A9B5E0200E6B351 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -136,8 +136,8 @@
 				6003F59C195388D20070C39A /* AppDelegate.h */,
 				6003F59D195388D20070C39A /* AppDelegate.m */,
 				36C916AF1A9B5E0200E6B351 /* Main.storyboard */,
-				36C752B81A9DC99F0053C4AB /* NavigationMenuController.h */,
-				36C752B91A9DC99F0053C4AB /* NavigationMenuController.m */,
+				36C752B81A9DC99F0053C4AB /* MenuItemViewController.h */,
+				36C752B91A9DC99F0053C4AB /* MenuItemViewController.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
 				36C752BB1A9DF2BF0053C4AB /* NavigationMenuManager.h */,
@@ -363,7 +363,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* AppDelegate.m in Sources */,
-				36C752BA1A9DC99F0053C4AB /* NavigationMenuController.m in Sources */,
+				36C752BA1A9DC99F0053C4AB /* MenuItemViewController.m in Sources */,
 				36C752BD1A9DF2BF0053C4AB /* NavigationMenuManager.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);

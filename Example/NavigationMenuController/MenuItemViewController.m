@@ -6,16 +6,16 @@
 //  Copyright (c) 2015 Ilter Cengiz. All rights reserved.
 //
 
-#import "NavigationMenuController.h"
+#import "MenuItemViewController.h"
 #import "NavigationMenuManager.h"
 
 #import <UINavigationMenuController.h>
 
-@interface NavigationMenuController () <UINavigationMenuControllerDelegate>
+@interface MenuItemViewController () <UINavigationMenuControllerDelegate>
 
 @end
 
-@implementation NavigationMenuController
+@implementation MenuItemViewController
 
 #pragma mark - View life cycle
 
