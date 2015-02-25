@@ -28,14 +28,19 @@
 #pragma mark - Navigation menu controller data source
 
 - (UIViewController *)navigationMenuController:(UINavigationMenuController *)navigationMenuController viewControllerForMenuItemAtIndex:(NSInteger)index {
+    
     UIViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuItemViewController"];
+    vc.title = [NSString stringWithFormat:@"Menu Item %li", index + 1];
+    
     UILabel *label = (UILabel *)[vc.view viewWithTag:1];
-    label.text = [NSString stringWithFormat:@"View Controller %li", index + 1];
+    label.text = [NSString stringWithFormat:@"Menu Item %li", index + 1];
+    
     return vc;
+    
 }
 
 - (NSString *)navigationMenuController:(UINavigationMenuController *)navigationMenuController titleForMenuItemAtIndex:(NSInteger)index {
-    return [NSString stringWithFormat:@"Title %li", index + 1];
+    return [NSString stringWithFormat:@"Menu Item %li", index + 1];
 }
 
 - (NSInteger)numberOfMenuItemsInNavigationMenuController:(UINavigationMenuController *)navigationMenuController {

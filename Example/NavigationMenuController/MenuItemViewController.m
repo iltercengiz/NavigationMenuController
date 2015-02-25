@@ -20,7 +20,11 @@
 #pragma mark - View life cycle
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(didTapCloseBarButton:)];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -31,6 +35,12 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
+}
+
+#pragma mark - IBAction
+
+- (IBAction)didTapCloseBarButton:(id)sender {
+    [self.navigationController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Navigation menu controller delegate
