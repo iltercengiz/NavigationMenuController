@@ -1,11 +1,10 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
 target 'NavigationMenuController', :exclusive => true do
-  pod "NavigationMenuController", :path => "../"
+    pod "NavigationMenuController", :path => "../"
+    pod 'Reveal-iOS-SDK', '~> 1.5.1', :configurations => ['Debug']
 end
 
 target 'Tests', :exclusive => true do
-  pod "NavigationMenuController", :path => "../"
-
-  
+    pod "NavigationMenuController", :path => "../"
 end
