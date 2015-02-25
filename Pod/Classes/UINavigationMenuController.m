@@ -16,31 +16,15 @@
  @see <#selector#>
  @warning <#description#>
  */
-@property (nonatomic) UIViewController *contentViewController;
-
-/**
- <#description#>
- 
- @see <#selector#>
- @warning <#description#>
- */
-@property (nonatomic) UIViewController *currentViewController;
-
-/**
- <#description#>
- 
- @see <#selector#>
- @warning <#description#>
- */
-@property (nonatomic) UIButton *menuButton;
-
-/**
- <#description#>
- 
- @see <#selector#>
- @warning <#description#>
- */
 @property (nonatomic) UICollectionViewController *collectionViewController;
+
+/**
+ <#description#>
+ 
+ @see <#selector#>
+ @warning <#description#>
+ */
+@property (nonatomic) id<UINavigationMenuControllerDataSource> menuManager;
 
 @end
 
@@ -49,25 +33,23 @@
 #pragma mark - NSObject UIKit Additions
 
 - (void)awakeFromNib {
-    
     [super awakeFromNib];
-    
-    NSAssert(self.topViewController == nil, @"Either programmatically or from Interface Builder, root view controller of this class should not be set!");
-    
-    self.contentViewController = [UIViewController new];
-    self.contentViewController.view.backgroundColor = [UIColor lightGrayColor];
-    
-    [self setViewControllers:@[self.contentViewController]];
-    
 }
 
 #pragma mark - Initialization
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
-    self = [super init];
+    self = [super initWithRootViewController:rootViewController];
     if (self) {
-        NSLog(@"Either programmatically or from Interface Builder, root view controller of this class should not be set!");
-        // Override this method to prevent setting the root view controller
+        [self checkIfViewControllerShouldShowMenu:rootViewController];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self checkIfViewControllerShouldShowMenu:self.topViewController];
     }
     return self;
 }
@@ -77,18 +59,6 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
-    // Menu button on the navigation bar
-    
-    self.menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.menuButton addTarget:self action:@selector(didTapMenuButton:) forControlEvents:UIControlEventTouchUpInside];
-    [self.menuButton setTitle:@"Title" forState:UIControlStateNormal];
-    [self.menuButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.menuButton sizeToFit];
-    
-    // Navigation items are per view controllers on the stack, so add the button to the navigation item of top view controller
-    
-    [self.contentViewController.navigationItem setTitleView:self.menuButton];
     
     // Create and configure the collection view controller that will be used as menu
     
@@ -107,18 +77,38 @@
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - Stack management
+
+- (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {
+    
+    [super setViewControllers:viewControllers animated:animated];
+    
+    [self checkIfViewControllerShouldShowMenu:[viewControllers lastObject]];
+    
+}
+
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    
+    [super pushViewController:viewController animated:animated];
+    
+    [self checkIfViewControllerShouldShowMenu:viewController];
+    
+}
+
 #pragma mark - IBAction
 
 - (IBAction)didTapMenuButton:(id)sender {
     
+    UIButton *menuButton = sender;
+    
     // Show the menu
-    if (self.menuButton.selected) {
+    if (!menuButton.selected) {
         
         self.collectionViewController.view.frame = self.view.bounds;
         
-        [self.collectionViewController willMoveToParentViewController:self.contentViewController];
-        [self.contentViewController.view addSubview:self.collectionViewController.view];
-        [self.collectionViewController didMoveToParentViewController:self.contentViewController];
+        [self.collectionViewController willMoveToParentViewController:self];
+        [self.view insertSubview:self.collectionViewController.view belowSubview:self.navigationBar];
+        [self.collectionViewController didMoveToParentViewController:self];
         
     }
     
@@ -129,7 +119,37 @@
         
     }
     
-    self.menuButton.selected = !self.menuButton.selected;
+    menuButton.selected = !menuButton.selected;
+    
+}
+
+#pragma mark - Helpers
+
+- (void)checkIfViewControllerShouldShowMenu:(UIViewController *)viewController {
+    
+    if ([viewController conformsToProtocol:@protocol(UINavigationMenuControllerDelegate)] &&
+        [viewController respondsToSelector:@selector(dataSourceClassForNavigationMenuController:)])
+    {
+        
+        id<UINavigationMenuControllerDelegate> dataSourceProvider = (id<UINavigationMenuControllerDelegate>)viewController;
+        
+        Class menuManagerClass = [dataSourceProvider dataSourceClassForNavigationMenuController:self];
+        
+        self.menuManager = [menuManagerClass new];
+        
+        // Menu button on the navigation bar
+        
+        UIButton *menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [menuButton addTarget:self action:@selector(didTapMenuButton:) forControlEvents:UIControlEventTouchUpInside];
+        [menuButton setTitle:viewController.title forState:UIControlStateNormal];
+        [menuButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [menuButton sizeToFit];
+        
+        // Navigation items are per view controllers on the stack, so add the button to the navigation item of top view controller
+        
+        viewController.navigationItem.titleView = menuButton;
+        
+    }
     
 }
 
@@ -166,10 +186,10 @@
         
     }
     
-    NSAssert([self.menuControllerDataSource respondsToSelector:@selector(navigationMenuController:titleForMenuItemAtIndex:)],
+    NSAssert([self.menuManager respondsToSelector:@selector(navigationMenuController:titleForMenuItemAtIndex:)],
              @"Either `menuControllerDataSource` is not provided or it does not implement `-navigationMenuController:titleForMenuItemAtIndex:`!");
     
-    titleLabel.text = [self.menuControllerDataSource navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
+    titleLabel.text = [self.menuManager navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
     
     return cell;
     
@@ -177,10 +197,10 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSAssert([self.menuControllerDataSource respondsToSelector:@selector(numberOfMenuItemsInNavigationMenuController:)],
+    NSAssert([self.menuManager respondsToSelector:@selector(numberOfMenuItemsInNavigationMenuController:)],
              @"Either `menuControllerDataSource` is not provided or it does not implement `-numberOfMenuItemsInNavigationMenuController:`!");
     
-    return [self.menuControllerDataSource numberOfMenuItemsInNavigationMenuController:self];
+    return [self.menuManager numberOfMenuItemsInNavigationMenuController:self];
     
 }
 
@@ -188,28 +208,17 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSAssert([self.menuControllerDataSource respondsToSelector:@selector(navigationMenuController:viewControllerForMenuItemAtIndex:)],
+    NSAssert([self.menuManager respondsToSelector:@selector(navigationMenuController:viewControllerForMenuItemAtIndex:)],
              @"Either `menuControllerDataSource` is not provided or it does not implement `-navigationMenuController:viewControllerForMenuItemAtIndex:`!");
     
-    // Remove the current view controller from the view hierarchy, if there's any
-    if (self.currentViewController) {
-        [self.currentViewController.view removeFromSuperview];
-    }
+    UIViewController *viewController = [self.menuManager navigationMenuController:self viewControllerForMenuItemAtIndex:indexPath.item];
     
-    // Get the view controller from the data source
-    self.currentViewController = [self.menuControllerDataSource navigationMenuController:self viewControllerForMenuItemAtIndex:indexPath.item];
+    NSMutableArray *mutableViewControllers = [self.viewControllers mutableCopy];
+    [mutableViewControllers replaceObjectAtIndex:mutableViewControllers.count - 1 withObject:viewController];
     
-    // Add it as a child view controller
-    self.currentViewController.view.frame = self.view.bounds;
+    [self setViewControllers:mutableViewControllers animated:NO];
     
-    [self.currentViewController willMoveToParentViewController:self.contentViewController];
-    [self.contentViewController.view addSubview:self.currentViewController.view];
-    [self.currentViewController didMoveToParentViewController:self.contentViewController];
-    
-    // Inform the delegate
-    if ([self.menuControllerDelegate respondsToSelector:@selector(navigationMenuController:didSelectMenuItemAtIndex:)]) {
-        [self.menuControllerDelegate navigationMenuController:self didSelectMenuItemAtIndex:indexPath.item];
-    }
+    [self.collectionViewController.view removeFromSuperview];
     
 }
 

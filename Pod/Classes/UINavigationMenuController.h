@@ -19,14 +19,6 @@
  @see <#selector#>
  @warning <#description#>
  */
-@property (weak, nonatomic) id<UINavigationMenuControllerDataSource> menuControllerDataSource;
-
-/**
- <#description#>
- 
- @see <#selector#>
- @warning <#description#>
- */
 @property (weak, nonatomic) id<UINavigationMenuControllerDelegate> menuControllerDelegate;
 
 @end
@@ -87,6 +79,6 @@
  @see <#selector#>
  @warning <#description#>
  */
-- (void)navigationMenuController:(UINavigationMenuController *)navigationMenuController didSelectMenuItemAtIndex:(NSInteger)index;
+- (Class)dataSourceClassForNavigationMenuController:(UINavigationMenuController *)navigationMenuController;
 
 @end
