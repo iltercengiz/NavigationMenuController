@@ -7,6 +7,7 @@
 //
 
 #import "UINavigationMenuController.h"
+#import "UINavigationMenuManager.h"
 
 @interface UINavigationMenuController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -24,7 +25,7 @@
  @see <#selector#>
  @warning <#description#>
  */
-@property (nonatomic) id<UINavigationMenuControllerDataSource> menuManager;
+@property (nonatomic) UINavigationMenuManager *navigationMenuManager;
 
 @end
 
@@ -133,9 +134,12 @@
         
         id<UINavigationMenuControllerDelegate> dataSourceProvider = (id<UINavigationMenuControllerDelegate>)viewController;
         
-        Class menuManagerClass = [dataSourceProvider dataSourceClassForNavigationMenuController:self];
+        Class navigationMenuManagerClass = [dataSourceProvider dataSourceClassForNavigationMenuController:self];
         
-        self.menuManager = [menuManagerClass new];
+        NSAssert([navigationMenuManagerClass isSubclassOfClass:[UINavigationMenuManager class]],
+                 @"Provided menu manager must be a subclass of UINavigationMenuManager");
+        
+        self.navigationMenuManager = [navigationMenuManagerClass new];
         
         // Menu button on the navigation bar
         
@@ -186,10 +190,10 @@
         
     }
     
-    NSAssert([self.menuManager respondsToSelector:@selector(navigationMenuController:titleForMenuItemAtIndex:)],
-             @"Either `menuControllerDataSource` is not provided or it does not implement `-navigationMenuController:titleForMenuItemAtIndex:`!");
+    NSAssert([self.navigationMenuManager respondsToSelector:@selector(navigationMenuController:titleForMenuItemAtIndex:)],
+             @"Either `navigationMenuManager` is not provided or it does not implement `-navigationMenuController:titleForMenuItemAtIndex:`!");
     
-    titleLabel.text = [self.menuManager navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
+    titleLabel.text = [self.navigationMenuManager navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
     
     return cell;
     
@@ -197,10 +201,10 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSAssert([self.menuManager respondsToSelector:@selector(numberOfMenuItemsInNavigationMenuController:)],
-             @"Either `menuControllerDataSource` is not provided or it does not implement `-numberOfMenuItemsInNavigationMenuController:`!");
+    NSAssert([self.navigationMenuManager respondsToSelector:@selector(numberOfMenuItemsInNavigationMenuController:)],
+             @"Either `navigationMenuManager` is not provided or it does not implement `-numberOfMenuItemsInNavigationMenuController:`!");
     
-    return [self.menuManager numberOfMenuItemsInNavigationMenuController:self];
+    return [self.navigationMenuManager numberOfMenuItemsInNavigationMenuController:self];
     
 }
 
@@ -208,10 +212,10 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSAssert([self.menuManager respondsToSelector:@selector(navigationMenuController:viewControllerForMenuItemAtIndex:)],
-             @"Either `menuControllerDataSource` is not provided or it does not implement `-navigationMenuController:viewControllerForMenuItemAtIndex:`!");
+    NSAssert([self.navigationMenuManager respondsToSelector:@selector(navigationMenuController:viewControllerForMenuItemAtIndex:)],
+             @"Either `navigationMenuManager` is not provided or it does not implement `-navigationMenuController:viewControllerForMenuItemAtIndex:`!");
     
-    UIViewController *viewController = [self.menuManager navigationMenuController:self viewControllerForMenuItemAtIndex:indexPath.item];
+    UIViewController *viewController = [self.navigationMenuManager navigationMenuController:self viewControllerForMenuItemAtIndex:indexPath.item];
     
     NSMutableArray *mutableViewControllers = [self.viewControllers mutableCopy];
     [mutableViewControllers replaceObjectAtIndex:mutableViewControllers.count - 1 withObject:viewController];
