@@ -10,6 +10,8 @@
 
 @implementation UINavigationMenuManager
 
+#pragma mark - Public methods
+
 - (UIViewController *)navigationMenuController:(UINavigationMenuController *)navigationMenuController viewControllerForMenuItemAtIndex:(NSInteger)index {
     NSAssert(NO, @"-navigationMenuController:viewControllerForMenuItemAtIndex: must be overridden in subclass");
     return nil;

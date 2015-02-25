@@ -12,30 +12,22 @@
 @interface UINavigationMenuController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 /**
- <#description#>
- 
- @see <#selector#>
- @warning <#description#>
+ Collection view controller that is used for menu presentation.
+ It's added as a child view controller in navigation menu controller when the menu is enabled for current view controller and navigation menu button is pressed.
  */
 @property (nonatomic) UICollectionViewController *collectionViewController;
 
 /**
- <#description#>
+ Navigation menu manager object used as a data source.
+ Created in `checkIfViewControllerShouldShowMenu:` method if current view controller supports navigation menu.
  
- @see <#selector#>
- @warning <#description#>
+ @see `checkIfViewControllerShouldShowMenu:`
  */
 @property (nonatomic) UINavigationMenuManager *navigationMenuManager;
 
 @end
 
 @implementation UINavigationMenuController
-
-#pragma mark - NSObject UIKit Additions
-
-- (void)awakeFromNib {
-    [super awakeFromNib];
-}
 
 #pragma mark - Initialization
 
@@ -104,20 +96,16 @@
     
     // Show the menu
     if (!menuButton.selected) {
-        
         self.collectionViewController.view.frame = self.view.bounds;
         
         [self.collectionViewController willMoveToParentViewController:self];
         [self.view insertSubview:self.collectionViewController.view belowSubview:self.navigationBar];
         [self.collectionViewController didMoveToParentViewController:self];
-        
     }
     
     // Hide the menu
     else {
-        
         [self.collectionViewController.view removeFromSuperview];
-        
     }
     
     menuButton.selected = !menuButton.selected;
@@ -126,6 +114,18 @@
 
 #pragma mark - Helpers
 
+/**
+ Checks if the given view controller should have navigation menu or not.
+ Control is made by checking if `viewController` conforms to `UINavigationMenuControllerDelegate` protocol and implements `-dataSourceClassForNavigationMenuController:` method.
+ This method is called from several methods overridden from `UINavigationController` to catch every view controller that is added to the navigation stack.
+ 
+ @param viewController View controller object that is newly added to the navigation stack
+ 
+ @see `-initWithRootViewController:`
+ @see `-initWithCoder:`
+ @see `-setViewControllers:animated:`
+ @see `-pushViewController:animated:`
+ */
 - (void)checkIfViewControllerShouldShowMenu:(UIViewController *)viewController {
     
     if ([viewController conformsToProtocol:@protocol(UINavigationMenuControllerDelegate)] &&
@@ -229,7 +229,7 @@
 #pragma mark - Collection view delegate flow layout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(CGRectGetWidth(collectionView.frame) - 32.0, 72.0);
+    return CGSizeMake(CGRectGetWidth(collectionView.frame) - 32.0, 44.0);
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {

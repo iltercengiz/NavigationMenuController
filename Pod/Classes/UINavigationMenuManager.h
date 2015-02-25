@@ -13,38 +13,37 @@
 @interface UINavigationMenuManager : NSObject
 
 /**
- <#description#>
+ Returns a view controller for the given index that will be presented by the navigation menu controller.
  
- @param <#parameter#> <#description#>
+ @param navigationMenuController Navigation menu controller object that asks for the view controller
+ @param index Index of the view controller in question
  
- @return <#description#>
+ @return A view controller to be presented
  
- @see <#selector#>
- @warning <#description#>
+ @warning Subclasses must override this method, otherwise an assertion will throw an exception
  */
 - (UIViewController *)navigationMenuController:(UINavigationMenuController *)navigationMenuController viewControllerForMenuItemAtIndex:(NSInteger)index;
 
 /**
- <#description#>
+ Returns a title for the menu item for the given index that will be shown in the appropriate entry in the menu.
  
- @param <#parameter#> <#description#>
+ @param navigationMenuController Navigation menu controller object that asks for the title
+ @param index Index of the menu item whom title is asked for
  
- @return <#description#>
+ @return A title for the menu item
  
- @see <#selector#>
- @warning <#description#>
+ @warning Subclasses must override this method, otherwise an assertion will throw an exception
  */
 - (NSString *)navigationMenuController:(UINavigationMenuController *)navigationMenuController titleForMenuItemAtIndex:(NSInteger)index;
 
 /**
- <#description#>
+ Returns the number of menu items that will be available in the menu.
  
- @param <#parameter#> <#description#>
+ @param navigationMenuController Navigation menu controller object that asks how many items should be available in the menu
  
- @return <#description#>
+ @return Number of menu items
  
- @see <#selector#>
- @warning <#description#>
+ @warning Subclasses must override this method, otherwise an assertion will throw an exception
  */
 - (NSInteger)numberOfMenuItemsInNavigationMenuController:(UINavigationMenuController *)navigationMenuController;
 

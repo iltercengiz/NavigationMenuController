@@ -13,29 +13,21 @@
 
 @interface UINavigationMenuController : UINavigationController
 
-/**
- <#description#>
- 
- @see <#selector#>
- @warning <#description#>
- */
-@property (weak, nonatomic) id<UINavigationMenuControllerDelegate> menuControllerDelegate;
-
 @end
 
 @protocol UINavigationMenuControllerDelegate <NSObject>
 
-@optional
-
 /**
- <#description#>
+ View controllers that should have navigation menu enabled must conform to `UINavigationMenuControllerDelegate` protocol, implement this method, and return a valid menu manager class, in this case a subclass of `UINavigationMenuManager`.
+ This method is used to ask for the class of the menu manager that will be used as data source of the navigation menu controller.
+ Classes returned with this menu must have overridden the public methods available in `UINavigationMenuManager`.
+ Navigation menu is not enabled for the view controllers in stack which don't conform to `UINavigationMenuControllerDelegate` protocol and implement this method. In this case, behind the scenes navigation controller works like it should.
  
- @param <#parameter#> <#description#>
+ @param navigationMenuController Navigation menu controller object that asks for the menu manager class
  
- @return <#description#>
+ @return Custom menu manager class
  
- @see <#selector#>
- @warning <#description#>
+ @warning View controllers that are presented for the menu items should return a valid class
  */
 - (Class)dataSourceClassForNavigationMenuController:(UINavigationMenuController *)navigationMenuController;
 
