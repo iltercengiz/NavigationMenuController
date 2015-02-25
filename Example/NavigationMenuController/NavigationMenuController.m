@@ -7,8 +7,11 @@
 //
 
 #import "NavigationMenuController.h"
+#import "NavigationMenuManager.h"
 
-@interface NavigationMenuController () <UINavigationMenuControllerDataSource, UINavigationMenuControllerDelegate>
+#import <UINavigationMenuController.h>
+
+@interface NavigationMenuController () <UINavigationMenuControllerDelegate>
 
 @end
 
@@ -17,12 +20,7 @@
 #pragma mark - View life cycle
 
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
-    
-    self.menuControllerDataSource = self;
-    self.menuControllerDelegate = self;
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -35,27 +33,10 @@
     
 }
 
-#pragma mark - Navigation menu controller data source
-
-- (UIViewController *)navigationMenuController:(UINavigationMenuController *)navigationMenuController viewControllerForMenuItemAtIndex:(NSInteger)index {
-    UIViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuItemViewController"];
-    UILabel *label = (UILabel *)[vc.view viewWithTag:1];
-    label.text = [NSString stringWithFormat:@"View Controller %li", index + 1];
-    return vc;
-}
-
-- (NSString *)navigationMenuController:(UINavigationMenuController *)navigationMenuController titleForMenuItemAtIndex:(NSInteger)index {
-    return [NSString stringWithFormat:@"Title %li", index + 1];
-}
-
-- (NSInteger)numberOfMenuItemsInNavigationMenuController:(UINavigationMenuController *)navigationMenuController {
-    return 6;
-}
-
 #pragma mark - Navigation menu controller delegate
 
-- (void)navigationMenuController:(UINavigationMenuController *)navigationMenuController didSelectMenuItemAtIndex:(NSInteger)index {
-    NSLog(@"-navigationMenuController:didSelectMenuItemAtIndex: %li", index);
+- (Class)dataSourceClassForNavigationMenuController:(UINavigationMenuController *)navigationMenuController {
+    return [NavigationMenuManager class];
 }
 
 @end

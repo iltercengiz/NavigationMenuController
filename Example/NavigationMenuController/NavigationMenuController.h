@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Ilter Cengiz. All rights reserved.
 //
 
-#import "UINavigationMenuController.h"
+#import <UIKit/UIKit.h>
 
-@interface NavigationMenuController : UINavigationMenuController
+@interface NavigationMenuController : UIViewController
 
 @end
