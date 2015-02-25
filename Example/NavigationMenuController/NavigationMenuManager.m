@@ -8,28 +8,15 @@
 
 #import "NavigationMenuManager.h"
 
-@interface NavigationMenuManager ()
-
-@property (nonatomic) UIStoryboard *storyboard;
-
-@end
-
 @implementation NavigationMenuManager
 
-#pragma mark - Getter
-
-- (UIStoryboard *)storyboard {
-    if (!_storyboard) {
-        _storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    }
-    return _storyboard;
-}
-
-#pragma mark - Navigation menu controller data source
+#pragma mark - Overrides
 
 - (UIViewController *)navigationMenuController:(UINavigationMenuController *)navigationMenuController viewControllerForMenuItemAtIndex:(NSInteger)index {
     
-    UIViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"MenuItemViewController"];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    UIViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"MenuItemViewController"];
     vc.title = [NSString stringWithFormat:@"Menu Item %li", index + 1];
     
     UILabel *label = (UILabel *)[vc.view viewWithTag:1];
