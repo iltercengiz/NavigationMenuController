@@ -105,7 +105,9 @@
     
     // Hide the menu
     else {
+        [self.collectionViewController willMoveToParentViewController:nil];
         [self.collectionViewController.view removeFromSuperview];
+        [self.collectionViewController removeFromParentViewController];
     }
     
     menuButton.selected = !menuButton.selected;
@@ -222,7 +224,9 @@
     
     [self setViewControllers:mutableViewControllers animated:NO];
     
+    [self.collectionViewController willMoveToParentViewController:nil];
     [self.collectionViewController.view removeFromSuperview];
+    [self.collectionViewController removeFromParentViewController];
     
 }
 
