@@ -218,6 +218,7 @@
              @"Either `navigationMenuManager` is not provided or it does not implement `-navigationMenuController:viewControllerForMenuItemAtIndex:`!");
     
     UIViewController *viewController = [self.navigationMenuManager navigationMenuController:self viewControllerForMenuItemAtIndex:indexPath.item];
+    viewController.title = [self.navigationMenuManager navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
     
     NSMutableArray *mutableViewControllers = [self.viewControllers mutableCopy];
     [mutableViewControllers replaceObjectAtIndex:mutableViewControllers.count - 1 withObject:viewController];
