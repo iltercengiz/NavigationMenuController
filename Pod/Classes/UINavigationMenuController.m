@@ -121,7 +121,7 @@
         
         [self.view insertSubview:self.blurView belowSubview:self.collectionViewController.view];
         
-        [UIView animateWithDuration:2.0 animations:^{
+        [UIView animateWithDuration:0.3 animations:^{
             self.collectionViewController.view.alpha = 1.0;
             self.blurView.alpha = 1.0;
         }];
@@ -129,11 +129,16 @@
     
     // Hide the menu
     else {
-        [self.collectionViewController willMoveToParentViewController:nil];
-        [self.collectionViewController.view removeFromSuperview];
-        [self.collectionViewController removeFromParentViewController];
-        
-        [self.blurView removeFromSuperview];
+        [UIView animateWithDuration:0.3 animations:^{
+            self.collectionViewController.view.alpha = 0.0;
+            self.blurView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            [self.collectionViewController willMoveToParentViewController:nil];
+            [self.collectionViewController.view removeFromSuperview];
+            [self.collectionViewController removeFromParentViewController];
+            
+            [self.blurView removeFromSuperview];
+        }];
     }
     
     menuButton.selected = !menuButton.selected;
