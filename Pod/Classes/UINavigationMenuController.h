@@ -13,6 +13,13 @@
 
 @interface UINavigationMenuController : UINavigationController
 
+/**
+ Sets the given title to the menu button.
+ 
+ @param `menuTitle` Title to be set
+ */
+- (void)setMenuTitle:(NSString *)menuTitle;
+
 @end
 
 @protocol UINavigationMenuControllerDelegate <NSObject>

@@ -101,6 +101,13 @@
     
 }
 
+#pragma mark - Public methods
+
+- (void)setMenuTitle:(NSString *)menuTitle {
+    UIButton *menuButton = (UIButton *)self.topViewController.navigationItem.titleView;
+    [menuButton setTitle:menuTitle forState:UIControlStateNormal];
+}
+
 #pragma mark - IBAction
 
 - (IBAction)didTapMenuButton:(id)sender {

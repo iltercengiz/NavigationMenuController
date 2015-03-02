@@ -117,10 +117,10 @@
             </objects>
             <point key="canvasLocation" x="-1456" y="876"/>
         </scene>
-        <!--Menu Item 1-->
+        <!--Menu Item View Controller-->
         <scene sceneID="PZG-6T-dks">
             <objects>
-                <viewController storyboardIdentifier="MenuItemViewController" title="Menu Item 1" id="ybJ-h1-E6v" customClass="MenuItemViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MenuItemViewController" id="ybJ-h1-E6v" customClass="MenuItemViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="akd-1K-Kca"/>
                         <viewControllerLayoutGuide type="bottom" id="a9U-HG-T3b"/>

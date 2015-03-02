@@ -25,6 +25,8 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(didTapCloseBarButton:)];
     
+    [(UINavigationMenuController *)self.navigationController setMenuTitle:@"Menu title 1"];
+    
 }
 
 - (void)didReceiveMemoryWarning {
