@@ -25,6 +25,12 @@
  */
 @property (nonatomic) UINavigationMenuManager *navigationMenuManager;
 
+/**
+ Size of every menu item.
+ Calculated once and same for every item.
+ */
+@property (nonatomic) CGSize menuItemSize;
+
 @end
 
 @implementation UINavigationMenuController
@@ -112,6 +118,19 @@
     
     menuButton.selected = !menuButton.selected;
     
+}
+
+#pragma mark - Getter
+
+- (CGSize)menuItemSize {
+    if (CGSizeEqualToSize(_menuItemSize, CGSizeZero)) {
+        NSInteger numberOfItems = [self.navigationMenuManager numberOfMenuItemsInNavigationMenuController:self];
+        CGFloat spaces = 10 * (numberOfItems + 1);
+        CGFloat totalHeight = CGRectGetHeight(self.collectionViewController.collectionView.frame) - CGRectGetHeight(self.navigationBar.frame) - 20.0; // 20.0 for status bar
+        CGFloat height = (totalHeight - spaces) / numberOfItems;
+        _menuItemSize = CGSizeMake(CGRectGetWidth(self.collectionViewController.collectionView.frame) - 32.0, height);
+    }
+    return _menuItemSize;
 }
 
 #pragma mark - Helpers
@@ -234,7 +253,7 @@
 #pragma mark - Collection view delegate flow layout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(CGRectGetWidth(collectionView.frame) - 32.0, 44.0);
+    return self.menuItemSize;
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
