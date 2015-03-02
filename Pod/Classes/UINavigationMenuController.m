@@ -9,6 +9,8 @@
 #import "UINavigationMenuController.h"
 #import "UINavigationMenuManager.h"
 
+#import <LiveFrost/LiveFrost.h>
+
 @interface UINavigationMenuController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 /**
@@ -30,6 +32,8 @@
  Calculated once and same for every item.
  */
 @property (nonatomic) CGSize menuItemSize;
+
+@property (nonatomic) LFGlassView *blurView;
 
 @end
 
@@ -65,7 +69,7 @@
     self.collectionViewController.collectionView.dataSource = self;
     self.collectionViewController.collectionView.delegate = self;
     
-    self.collectionViewController.collectionView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3];
+    self.collectionViewController.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionViewController.collectionView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
     
     [self.collectionViewController.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"MenuItemCollectionViewCell"];
@@ -102,11 +106,22 @@
     
     // Show the menu
     if (!menuButton.selected) {
+        self.collectionViewController.view.alpha = 0.0;
         self.collectionViewController.view.frame = self.view.bounds;
         
         [self.collectionViewController willMoveToParentViewController:self];
         [self.view insertSubview:self.collectionViewController.view belowSubview:self.navigationBar];
         [self.collectionViewController didMoveToParentViewController:self];
+        
+        self.blurView = [[LFGlassView alloc] initWithFrame:self.collectionViewController.view.frame];
+        self.blurView.alpha = 0.0;
+        
+        [self.view insertSubview:self.blurView belowSubview:self.collectionViewController.view];
+        
+        [UIView animateWithDuration:2.0 animations:^{
+            self.collectionViewController.view.alpha = 1.0;
+            self.blurView.alpha = 1.0;
+        }];
     }
     
     // Hide the menu
@@ -114,6 +129,8 @@
         [self.collectionViewController willMoveToParentViewController:nil];
         [self.collectionViewController.view removeFromSuperview];
         [self.collectionViewController removeFromParentViewController];
+        
+        [self.blurView removeFromSuperview];
     }
     
     menuButton.selected = !menuButton.selected;

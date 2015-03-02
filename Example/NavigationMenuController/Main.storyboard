@@ -130,16 +130,23 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Menu Item 1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cif-ug-5Jd">
-                                <rect key="frame" x="254" y="290" width="91" height="20"/>
+                                <rect key="frame" x="255" y="72" width="91" height="19.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" image="Lena" translatesAutoresizingMaskIntoConstraints="NO" id="noV-8E-gES">
+                                <rect key="frame" x="16" y="99.5" width="568" height="484.5"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="noV-8E-gES" firstAttribute="top" secondItem="cif-ug-5Jd" secondAttribute="bottom" constant="8" id="GyN-XB-CMT"/>
+                            <constraint firstItem="a9U-HG-T3b" firstAttribute="top" secondItem="noV-8E-gES" secondAttribute="bottom" constant="16" id="J5C-qK-der"/>
+                            <constraint firstItem="cif-ug-5Jd" firstAttribute="top" secondItem="akd-1K-Kca" secondAttribute="bottom" constant="8" id="UNZ-U9-c6O"/>
+                            <constraint firstAttribute="trailing" secondItem="noV-8E-gES" secondAttribute="trailing" constant="16" id="ZR0-Mq-o2P"/>
+                            <constraint firstItem="noV-8E-gES" firstAttribute="leading" secondItem="R5Z-EI-DHQ" secondAttribute="leading" constant="16" id="fcE-aR-G1a"/>
                             <constraint firstAttribute="centerX" secondItem="cif-ug-5Jd" secondAttribute="centerX" id="sb4-bF-Kvg"/>
-                            <constraint firstAttribute="centerY" secondItem="cif-ug-5Jd" secondAttribute="centerY" id="zeb-Xd-2XD"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="a4L-yJ-zIz"/>
@@ -184,6 +191,9 @@
             <point key="canvasLocation" x="659" y="1286"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Lena" width="256" height="256"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="k8T-hF-1fR"/>
     </inferredMetricsTieBreakers>
