@@ -33,6 +33,9 @@
  */
 @property (nonatomic) CGSize menuItemSize;
 
+/**
+ This is used to blur the background content while showing the menu.
+ */
 @property (nonatomic) LFGlassView *blurView;
 
 @end
