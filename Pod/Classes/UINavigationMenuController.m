@@ -11,7 +11,7 @@
 
 #import <LiveFrost/LiveFrost.h>
 
-@interface UINavigationMenuController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface UINavigationMenuController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate>
 
 /**
  Collection view controller that is used for menu presentation.
@@ -37,6 +37,9 @@
  This is used to blur the background content while showing the menu.
  */
 @property (nonatomic) LFGlassView *blurView;
+
+@property (nonatomic) NSArray *leftBarButtonItems;
+@property (nonatomic) NSArray *rightBarButtonItems;
 
 @end
 
@@ -132,6 +135,14 @@
             self.collectionViewController.view.alpha = 1.0;
             self.blurView.alpha = 1.0;
         }];
+        
+        self.leftBarButtonItems = self.topViewController.navigationItem.leftBarButtonItems;
+        self.rightBarButtonItems = self.topViewController.navigationItem.rightBarButtonItems;
+        
+        [self.topViewController.navigationItem setLeftBarButtonItems:nil animated:YES];
+        [self.topViewController.navigationItem setRightBarButtonItems:nil animated:YES];
+        
+        [self.topViewController.navigationItem setHidesBackButton:YES animated:YES];
     }
     
     // Hide the menu
@@ -218,6 +229,14 @@
         
         [self.blurView removeFromSuperview];
     }];
+    
+    [self.topViewController.navigationItem setLeftBarButtonItems:self.leftBarButtonItems animated:YES];
+    [self.topViewController.navigationItem setRightBarButtonItems:self.rightBarButtonItems animated:YES];
+    
+    self.leftBarButtonItems = nil;
+    self.rightBarButtonItems = nil;
+    
+    [self.topViewController.navigationItem setHidesBackButton:NO animated:YES];
 }
 
 #pragma mark - Collection view data source
