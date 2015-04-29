@@ -66,20 +66,14 @@
 #pragma mark - View life cycle
 
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
-    
     // Create and configure the collection view controller that will be used as menu
-    
     self.collectionViewController = [[UICollectionViewController alloc] initWithCollectionViewLayout:[UICollectionViewFlowLayout new]];
     self.collectionViewController.collectionView.dataSource = self;
     self.collectionViewController.collectionView.delegate = self;
-    
     self.collectionViewController.collectionView.backgroundColor = [UIColor clearColor];
     self.collectionViewController.collectionView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
-    
     [self.collectionViewController.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"MenuItemCollectionViewCell"];
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -89,19 +83,13 @@
 #pragma mark - Stack management
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {
-    
     [super setViewControllers:viewControllers animated:animated];
-    
     [self checkIfViewControllerShouldShowMenu:[viewControllers lastObject]];
-    
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    
     [super pushViewController:viewController animated:animated];
-    
     [self checkIfViewControllerShouldShowMenu:viewController];
-    
 }
 
 #pragma mark - Public methods
@@ -114,44 +102,29 @@
 #pragma mark - IBAction
 
 - (IBAction)didTapMenuButton:(id)sender {
-    
     UIButton *menuButton = sender;
-    
-    // Show the menu
-    if (!menuButton.selected) {
+    if (!menuButton.selected) { // Show the menu
         self.collectionViewController.view.alpha = 0.0;
         self.collectionViewController.view.frame = self.view.bounds;
-        
         [self.collectionViewController willMoveToParentViewController:self];
         [self.view insertSubview:self.collectionViewController.view belowSubview:self.navigationBar];
         [self.collectionViewController didMoveToParentViewController:self];
-        
         self.blurView = [[LFGlassView alloc] initWithFrame:self.collectionViewController.view.frame];
         self.blurView.alpha = 0.0;
-        
         [self.view insertSubview:self.blurView belowSubview:self.collectionViewController.view];
-        
         [UIView animateWithDuration:0.3 animations:^{
             self.collectionViewController.view.alpha = 1.0;
             self.blurView.alpha = 1.0;
         }];
-        
         self.leftBarButtonItems = self.topViewController.navigationItem.leftBarButtonItems;
         self.rightBarButtonItems = self.topViewController.navigationItem.rightBarButtonItems;
-        
         [self.topViewController.navigationItem setLeftBarButtonItems:nil animated:YES];
         [self.topViewController.navigationItem setRightBarButtonItems:nil animated:YES];
-        
         [self.topViewController.navigationItem setHidesBackButton:YES animated:YES];
-    }
-    
-    // Hide the menu
-    else {
+    } else { // Hide the menu
         [self dismissMenu];
     }
-    
     menuButton.selected = !menuButton.selected;
-    
 }
 
 #pragma mark - Getter
@@ -182,34 +155,22 @@
  @see `-pushViewController:animated:`
  */
 - (void)checkIfViewControllerShouldShowMenu:(UIViewController *)viewController {
-    
     if ([viewController conformsToProtocol:@protocol(UINavigationMenuControllerDelegate)] &&
-        [viewController respondsToSelector:@selector(dataSourceClassForNavigationMenuController:)])
-    {
-        
+        [viewController respondsToSelector:@selector(dataSourceClassForNavigationMenuController:)]) {
         id<UINavigationMenuControllerDelegate> dataSourceProvider = (id<UINavigationMenuControllerDelegate>)viewController;
-        
         Class navigationMenuManagerClass = [dataSourceProvider dataSourceClassForNavigationMenuController:self];
-        
         NSAssert([navigationMenuManagerClass isSubclassOfClass:[UINavigationMenuManager class]],
                  @"Provided menu manager must be a subclass of UINavigationMenuManager");
-        
         self.navigationMenuManager = [navigationMenuManagerClass new];
-        
         // Menu button on the navigation bar
-        
         UIButton *menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [menuButton addTarget:self action:@selector(didTapMenuButton:) forControlEvents:UIControlEventTouchUpInside];
         [menuButton setTitle:viewController.title forState:UIControlStateNormal];
         [menuButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [menuButton sizeToFit];
-        
         // Navigation items are per view controllers on the stack, so add the button to the navigation item of top view controller
-        
         viewController.navigationItem.titleView = menuButton;
-        
     }
-    
 }
 
 /**
@@ -229,84 +190,56 @@
         
         [self.blurView removeFromSuperview];
     }];
-    
     [self.topViewController.navigationItem setLeftBarButtonItems:self.leftBarButtonItems animated:YES];
     [self.topViewController.navigationItem setRightBarButtonItems:self.rightBarButtonItems animated:YES];
-    
     self.leftBarButtonItems = nil;
     self.rightBarButtonItems = nil;
-    
     [self.topViewController.navigationItem setHidesBackButton:NO animated:YES];
 }
 
 #pragma mark - Collection view data source
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MenuItemCollectionViewCell" forIndexPath:indexPath];
-    
     cell.backgroundColor = [UIColor lightGrayColor];
-    
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:1];
-    
     if (titleLabel == nil) {
-        
         titleLabel = [UILabel new];
-        
         titleLabel.numberOfLines = 0;
         titleLabel.tag = 1;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.textColor = [UIColor blackColor];
         titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
         [cell addSubview:titleLabel];
-        
         NSDictionary *views = @{@"titleLabel": titleLabel};
-        
         NSMutableArray *constraints = [NSMutableArray array];
-        
         [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[titleLabel]-0-|" options:0 metrics:nil views:views]];
         [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleLabel]-0-|" options:0 metrics:nil views:views]];
-        
         [cell addConstraints:constraints];
-        
     }
-    
     NSAssert([self.navigationMenuManager respondsToSelector:@selector(navigationMenuController:titleForMenuItemAtIndex:)],
              @"Either `navigationMenuManager` is not provided or it does not implement `-navigationMenuController:titleForMenuItemAtIndex:`!");
-    
     titleLabel.text = [self.navigationMenuManager navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
-    
     return cell;
-    
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    
     NSAssert([self.navigationMenuManager respondsToSelector:@selector(numberOfMenuItemsInNavigationMenuController:)],
              @"Either `navigationMenuManager` is not provided or it does not implement `-numberOfMenuItemsInNavigationMenuController:`!");
-    
     return [self.navigationMenuManager numberOfMenuItemsInNavigationMenuController:self];
-    
 }
 
 #pragma mark - Collection view delegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     NSAssert([self.navigationMenuManager respondsToSelector:@selector(navigationMenuController:viewControllerForMenuItemAtIndex:)],
              @"Either `navigationMenuManager` is not provided or it does not implement `-navigationMenuController:viewControllerForMenuItemAtIndex:`!");
-    
     UIViewController *viewController = [self.navigationMenuManager navigationMenuController:self viewControllerForMenuItemAtIndex:indexPath.item];
     viewController.title = [self.navigationMenuManager navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
-    
     NSMutableArray *mutableViewControllers = [self.viewControllers mutableCopy];
     [mutableViewControllers replaceObjectAtIndex:mutableViewControllers.count - 1 withObject:viewController];
-    
     [self setViewControllers:mutableViewControllers animated:NO];
-    
     [self dismissMenu];
-    
 }
 
 #pragma mark - Collection view delegate flow layout
