@@ -282,6 +282,7 @@
 #pragma mark - Collection view delegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self dismissMenu];
     NSAssert([self.navigationMenuManager respondsToSelector:@selector(navigationMenuController:viewControllerForMenuItemAtIndex:)],
              @"Either `navigationMenuManager` is not provided or it does not implement `-navigationMenuController:viewControllerForMenuItemAtIndex:`!");
     UIViewController *viewController = [self.navigationMenuManager navigationMenuController:self viewControllerForMenuItemAtIndex:indexPath.item];
@@ -289,7 +290,6 @@
     NSMutableArray *mutableViewControllers = [self.viewControllers mutableCopy];
     [mutableViewControllers replaceObjectAtIndex:mutableViewControllers.count - 1 withObject:viewController];
     [self setViewControllers:mutableViewControllers animated:NO];
-    [self dismissMenu];
 }
 
 #pragma mark - Collection view delegate flow layout
