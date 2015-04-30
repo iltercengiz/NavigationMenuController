@@ -14,11 +14,8 @@
 @interface UINavigationMenuController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate>
 
 /**
- Collection view controller that is used for menu presentation.
- It's added as a child view controller in navigation menu controller when the menu is enabled for current view controller and navigation menu button is pressed.
+ Collection view that is used for menu presentation.
  */
-//@property (nonatomic) UICollectionViewController *collectionViewController;
-
 @property (nonatomic) UICollectionView *collectionView;
 
 /**
@@ -40,6 +37,9 @@
  */
 @property (nonatomic) LFGlassView *blurView;
 
+/**
+ These are used to hold references to bar buttons to hide/show them when showing/dismissing the menu.
+ */
 @property (nonatomic) NSArray *leftBarButtonItems;
 @property (nonatomic) NSArray *rightBarButtonItems;
 
