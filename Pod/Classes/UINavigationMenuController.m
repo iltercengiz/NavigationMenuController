@@ -17,7 +17,9 @@
  Collection view controller that is used for menu presentation.
  It's added as a child view controller in navigation menu controller when the menu is enabled for current view controller and navigation menu button is pressed.
  */
-@property (nonatomic) UICollectionViewController *collectionViewController;
+//@property (nonatomic) UICollectionViewController *collectionViewController;
+
+@property (nonatomic) UICollectionView *collectionView;
 
 /**
  Navigation menu manager object used as a data source.
@@ -40,6 +42,9 @@
 
 @property (nonatomic) NSArray *leftBarButtonItems;
 @property (nonatomic) NSArray *rightBarButtonItems;
+
+@property (weak, nonatomic) NSLayoutConstraint *constraintCollectionViewTopToTop;
+@property (weak, nonatomic) NSLayoutConstraint *constraintCollectionViewBottomToBottom;
 
 @end
 
@@ -67,13 +72,36 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Create and configure the collection view controller that will be used as menu
-    self.collectionViewController = [[UICollectionViewController alloc] initWithCollectionViewLayout:[UICollectionViewFlowLayout new]];
-    self.collectionViewController.collectionView.dataSource = self;
-    self.collectionViewController.collectionView.delegate = self;
-    self.collectionViewController.collectionView.backgroundColor = [UIColor clearColor];
-    self.collectionViewController.collectionView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
-    [self.collectionViewController.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"MenuItemCollectionViewCell"];
+    
+    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(self.view.bounds), 0.0)
+                                             collectionViewLayout:[UICollectionViewFlowLayout new]];
+    self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
+    self.collectionView.backgroundColor = [UIColor clearColor];
+    self.collectionView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
+    self.collectionView.hidden = YES;
+    self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"MenuItemCollectionViewCell"];
+    [self.view insertSubview:self.collectionView belowSubview:self.navigationBar];
+    
+    self.blurView = [[LFGlassView alloc] initWithFrame:self.view.bounds];
+    self.blurView.alpha = 0.0;
+    self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view insertSubview:self.blurView belowSubview:self.collectionView];
+    
+    NSDictionary *views = @{@"collectionView": self.collectionView, @"blurView": self.blurView};
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[collectionView]-0-|" options:0 metrics:nil views:views]];
+    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:-CGRectGetHeight(self.view.frame)];
+    [self.view addConstraint:constraint];
+    self.constraintCollectionViewTopToTop = constraint;
+    
+    constraint = [NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-CGRectGetHeight(self.view.frame)];
+    [self.view addConstraint:constraint];
+    self.constraintCollectionViewBottomToBottom = constraint;
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[blurView]-0-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[blurView]-0-|" options:0 metrics:nil views:views]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -103,25 +131,9 @@
 
 - (IBAction)didTapMenuButton:(id)sender {
     UIButton *menuButton = sender;
-    if (!menuButton.selected) { // Show the menu
-        self.collectionViewController.view.alpha = 0.0;
-        self.collectionViewController.view.frame = self.view.bounds;
-        [self.collectionViewController willMoveToParentViewController:self];
-        [self.view insertSubview:self.collectionViewController.view belowSubview:self.navigationBar];
-        [self.collectionViewController didMoveToParentViewController:self];
-        self.blurView = [[LFGlassView alloc] initWithFrame:self.collectionViewController.view.frame];
-        self.blurView.alpha = 0.0;
-        [self.view insertSubview:self.blurView belowSubview:self.collectionViewController.view];
-        [UIView animateWithDuration:0.3 animations:^{
-            self.collectionViewController.view.alpha = 1.0;
-            self.blurView.alpha = 1.0;
-        }];
-        self.leftBarButtonItems = self.topViewController.navigationItem.leftBarButtonItems;
-        self.rightBarButtonItems = self.topViewController.navigationItem.rightBarButtonItems;
-        [self.topViewController.navigationItem setLeftBarButtonItems:nil animated:YES];
-        [self.topViewController.navigationItem setRightBarButtonItems:nil animated:YES];
-        [self.topViewController.navigationItem setHidesBackButton:YES animated:YES];
-    } else { // Hide the menu
+    if (!menuButton.selected) {
+        [self showMenu];
+    } else {
         [self dismissMenu];
     }
     menuButton.selected = !menuButton.selected;
@@ -133,9 +145,9 @@
     if (CGSizeEqualToSize(_menuItemSize, CGSizeZero)) {
         NSInteger numberOfItems = [self.navigationMenuManager numberOfMenuItemsInNavigationMenuController:self];
         CGFloat spaces = 10 * (numberOfItems + 1);
-        CGFloat totalHeight = CGRectGetHeight(self.collectionViewController.collectionView.frame) - CGRectGetHeight(self.navigationBar.frame) - 20.0; // 20.0 for status bar
+        CGFloat totalHeight = CGRectGetHeight(self.collectionView.frame) - CGRectGetHeight(self.navigationBar.frame) - 20.0; // 20.0 for status bar
         CGFloat height = (totalHeight - spaces) / numberOfItems;
-        _menuItemSize = CGSizeMake(CGRectGetWidth(self.collectionViewController.collectionView.frame) - 32.0, height);
+        _menuItemSize = CGSizeMake(CGRectGetWidth(self.collectionView.frame) - 32.0, height);
     }
     return _menuItemSize;
 }
@@ -174,26 +186,50 @@
 }
 
 /**
+ Shows the menu with an animation
+ 
+ @see `-didTapMenuButton:`
+ */
+- (void)showMenu {
+    self.collectionView.hidden = NO;
+    self.constraintCollectionViewTopToTop.constant = 0.0;
+    [self.view setNeedsLayout];
+    [self.view layoutIfNeeded];
+    self.constraintCollectionViewBottomToBottom.constant = 0.0;
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.view layoutIfNeeded];
+        self.blurView.alpha = 1.0;
+    }];
+    
+    self.leftBarButtonItems = self.topViewController.navigationItem.leftBarButtonItems;
+    self.rightBarButtonItems = self.topViewController.navigationItem.rightBarButtonItems;
+    
+    [self.topViewController.navigationItem setLeftBarButtonItems:nil animated:YES];
+    [self.topViewController.navigationItem setRightBarButtonItems:nil animated:YES];
+    [self.topViewController.navigationItem setHidesBackButton:YES animated:YES];
+}
+
+/**
  Dismisses the open menu with an animation
  
  @see `-didTapMenuButton:`
  @see `collectionView:didSelectItemAtIndexPath:`
  */
 - (void)dismissMenu {
+    self.constraintCollectionViewBottomToBottom.constant = -CGRectGetHeight(self.view.frame);
     [UIView animateWithDuration:0.3 animations:^{
-        self.collectionViewController.view.alpha = 0.0;
+        [self.view layoutIfNeeded];
         self.blurView.alpha = 0.0;
     } completion:^(BOOL finished) {
-        [self.collectionViewController willMoveToParentViewController:nil];
-        [self.collectionViewController.view removeFromSuperview];
-        [self.collectionViewController removeFromParentViewController];
-        
-        [self.blurView removeFromSuperview];
+        self.collectionView.hidden = YES;
+        self.constraintCollectionViewTopToTop.constant = -CGRectGetHeight(self.view.frame);
     }];
-    [self.topViewController.navigationItem setLeftBarButtonItems:self.leftBarButtonItems animated:YES];
-    [self.topViewController.navigationItem setRightBarButtonItems:self.rightBarButtonItems animated:YES];
+    
     self.leftBarButtonItems = nil;
     self.rightBarButtonItems = nil;
+    
+    [self.topViewController.navigationItem setLeftBarButtonItems:self.leftBarButtonItems animated:YES];
+    [self.topViewController.navigationItem setRightBarButtonItems:self.rightBarButtonItems animated:YES];
     [self.topViewController.navigationItem setHidesBackButton:NO animated:YES];
 }
 
@@ -221,6 +257,10 @@
              @"Either `navigationMenuManager` is not provided or it does not implement `-navigationMenuController:titleForMenuItemAtIndex:`!");
     titleLabel.text = [self.navigationMenuManager navigationMenuController:self titleForMenuItemAtIndex:indexPath.item];
     return cell;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
