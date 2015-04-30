@@ -152,6 +152,13 @@
     return _menuItemSize;
 }
 
+#pragma mark - Setter
+
+- (void)setNavigationMenuManager:(UINavigationMenuManager *)navigationMenuManager {
+    _navigationMenuManager = navigationMenuManager;
+    [self.collectionView reloadData];
+}
+
 #pragma mark - Helpers
 
 /**
@@ -264,9 +271,12 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSAssert([self.navigationMenuManager respondsToSelector:@selector(numberOfMenuItemsInNavigationMenuController:)],
-             @"Either `navigationMenuManager` is not provided or it does not implement `-numberOfMenuItemsInNavigationMenuController:`!");
-    return [self.navigationMenuManager numberOfMenuItemsInNavigationMenuController:self];
+    if (self.navigationMenuManager) {
+        NSAssert([self.navigationMenuManager respondsToSelector:@selector(numberOfMenuItemsInNavigationMenuController:)],
+                 @"`navigationMenuManager` does not implement `-numberOfMenuItemsInNavigationMenuController:`!");
+        return [self.navigationMenuManager numberOfMenuItemsInNavigationMenuController:self];
+    }
+    return 0;
 }
 
 #pragma mark - Collection view delegate
